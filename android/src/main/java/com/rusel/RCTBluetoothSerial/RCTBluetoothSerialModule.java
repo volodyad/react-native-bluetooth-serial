@@ -64,6 +64,7 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
     private Promise mDeviceDiscoveryPromise;
     private Promise mPairDevicePromise;
     private String delimiter = "";
+    private String fileName = "";
 
     public IBluetoothInputStreamProcessor bluetoothInputStreamProcessor;
 
@@ -279,7 +280,7 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
 
     @ReactMethod
     public void withFileName(String fileName, Promise promise) {
-        this.bluetoothInputStreamProcessor = new BluetoothFileSaver(fileName, this);
+        this.fileName = fileName;
         promise.resolve(true);
     }
     /**************************************/
@@ -560,6 +561,9 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
         sendEvent(CONN_LOST, params);
     }
 
+    IBluetoothInputStreamProcessor getConnectionInputStreamProcessor() {
+        return new BluetoothFileSaver(this.fileName, this);
+    }
     /**
      * Handle error
      * @param e Exception

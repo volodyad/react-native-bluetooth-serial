@@ -172,7 +172,7 @@ class RCTBluetoothSerialService {
         cancelConnectedThread(); // Cancel any thread currently running a connection
 
         // Start the thread to manage the connection and perform transmissions
-        mConnectedThread = new ConnectedThread(socket, mModule.bluetoothInputStreamProcessor);
+        mConnectedThread = new ConnectedThread(socket, mModule.getConnectionInputStreamProcessor());
         mConnectedThread.start();
 
         mModule.onConnectionSuccess("Connected to " + device.getName());
