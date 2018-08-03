@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 // String testdata = 'testdata';
@@ -81,6 +82,7 @@ public class BluetoothFileSaver implements IBluetoothInputStreamProcessor {
 
     private long bytesToInt(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.allocate(mHeadersSize);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
         buffer.put(bytes);
         buffer.flip();
         return buffer.getInt();
