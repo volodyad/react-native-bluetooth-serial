@@ -579,7 +579,7 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
     void onFileChunkLoaded(double percentLoaded) {
         WritableMap params = Arguments.createMap();
         params.putDouble("percentLoaded", percentLoaded);
-        sendEvent(d, params);
+        sendEvent(FILE_PERCENT_LOADED, params);
     }
 
     void onFileLoaded() {
