@@ -729,19 +729,6 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
                             Log.e(TAG, "Cannot unregister receiver", e);
                             onError(e);
                         }
-                    } else if (state == BluetoothDevice.BOND_NONE && prevState == BluetoothDevice.BOND_BONDING){
-                        if (D) Log.d(TAG, "Pairing canceled");
-                        if (mPairDevicePromise != null) {
-                            mPairDevicePromise.resolve(true);
-                            mPairDevicePromise = null;
-                        }
-                        try {
-                            onPairingFailed();
-                            mReactContext.unregisterReceiver(this);
-                        } catch (Exception e) {
-                            Log.e(TAG, "Pairing canceled", e);
-                            onError(e);
-                        }
                     }
                 }
             }
