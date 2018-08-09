@@ -572,6 +572,7 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
     }
 
     void onPairingFailed() {
+        Log.d("BT", "PAIRING FAILED");
         sendEvent(PAIRING_FAILED, null);
     }
 
@@ -659,6 +660,7 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
                 mPairDevicePromise.reject(e);
                 mPairDevicePromise = null;
             }
+            onPairingFailed();
             onError(e);
         }
     }
@@ -673,6 +675,7 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
             Method m = device.getClass().getMethod("removeBond", (Class[]) null);
             m.invoke(device, (Object[]) null);
             registerDevicePairingReceiver(device.getAddress(), BluetoothDevice.BOND_NONE);
+            onPairingFailed();
         } catch (Exception e) {
             Log.e(TAG, "Cannot unpair device", e);
             if (mPairDevicePromise != null) {
@@ -739,7 +742,6 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
                             onError(e);
                         }
                     }
-
                 }
             }
         };
@@ -809,6 +811,11 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
                         case BluetoothAdapter.STATE_ON:
                             if (D) Log.d(TAG, "Bluetooth was enabled");
                             sendEvent(BT_ENABLED, null);
+                            break;
+
+                        case BluetoothAdapter.BOND_NONE:
+                            if (D) Log.d(TAG, "Unsuccessful device pairing");
+                            sendEvent(PAIRING_FAILED, null);
                             break;
                     }
                 }
