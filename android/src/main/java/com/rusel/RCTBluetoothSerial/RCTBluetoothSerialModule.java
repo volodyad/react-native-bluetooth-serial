@@ -92,6 +92,7 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
         mReactContext.addActivityEventListener(this);
         mReactContext.addLifecycleEventListener(this);
         registerBluetoothStateReceiver();
+        registerBondStateReceiver();
     }
 
     @Override
@@ -812,8 +813,30 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
                             if (D) Log.d(TAG, "Bluetooth was enabled");
                             sendEvent(BT_ENABLED, null);
                             break;
+                    }
+                }
+            }
+        };
 
-                        case BluetoothAdapter.BOND_NONE:
+        mReactContext.registerReceiver(bluetoothStateReceiver, intentFilter);
+    }
+
+    /**
+     * Register receiver for bond state change
+     */
+    private void registerBondStateReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+
+        intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
+        final BroadcastReceiver bondStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+                if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                    final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+                    switch (state) {
+                        case BluetoothDevice.BOND_NONE:
                             if (D) Log.d(TAG, "Unsuccessful device pairing");
                             sendEvent(PAIRING_FAILED, null);
                             break;
@@ -822,6 +845,6 @@ public class RCTBluetoothSerialModule extends ReactContextBaseJavaModule impleme
             }
         };
 
-        mReactContext.registerReceiver(bluetoothStateReceiver, intentFilter);
+        mReactContext.registerReceiver(bondStateReceiver, intentFilter);
     }
 }
